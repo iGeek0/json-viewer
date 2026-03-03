@@ -287,6 +287,7 @@
             <textarea id="json-input" placeholder='{"ejemplo": "pega tu JSON aquí", "numero": 42, "array": [1, 2, 3]}'></textarea>
             <div class="actions">
                 <button class="btn-primary" id="format-btn">Formatear</button>
+                <button class="btn-secondary" id="minify-btn">Minificar</button>
                 <button class="btn-secondary" id="clear-btn">Limpiar</button>
                 <button class="btn-secondary" id="sample-btn">Cargar ejemplo</button>
             </div>
@@ -413,6 +414,53 @@
             stats.style.display = 'flex';
         }
 
+        function minifyJson() {
+            const raw = input.value.trim();
+            
+            if (!raw) {
+                output.innerHTML = 'El JSON minificado aparecerá aquí';
+                output.classList.add('empty');
+                status.innerHTML = '';
+                stats.style.display = 'none';
+                return;
+            }
+
+            let parsed;
+            try {
+                parsed = JSON.parse(raw);
+            } catch (e) {
+                output.innerHTML = `<div class="error-message">
+                    <strong>Error de sintaxis:</strong><br>
+                    ${e.message}
+                </div>`;
+                output.classList.remove('empty');
+                status.innerHTML = '<div class="status error"><span class="status-dot"></span>Inválido</div>';
+                stats.style.display = 'none';
+                return;
+            }
+
+            const minified = JSON.stringify(parsed);
+            output.textContent = minified;
+            output.classList.remove('empty');
+
+            status.innerHTML = '<div class="status valid"><span class="status-dot"></span>Minificado</div>';
+            
+            const bytes = new Blob([minified]).size;
+            sizeStat.innerHTML = `📦 ${(bytes / 1024).toFixed(1)} KB`;
+            linesStat.innerHTML = `📄 1 línea`;
+            stats.style.display = 'flex';
+
+            // Update status and stats
+            status.innerHTML = '<div class="status valid"><span class="status-dot"></span>Válido</div>';
+            
+            const lines = formatted.split('\n').length;
+            const bytes = new Blob([formatted]).size;
+            
+            linesStat.innerHTML = `📄 ${lines} líneas`;
+            sizeStat.innerHTML = `📦 ${(bytes / 1024).toFixed(1)} KB`;
+            stats.style.display = 'flex';
+        }
+
         function clearInput() {
             input.value = '';
             output.innerHTML = 'El JSON formateado aparecerá aquí';
@@ -449,6 +497,7 @@
 
         // Event listeners
         document.getElementById('format-btn').addEventListener('click', formatJson);
+        document.getElementById('minify-btn').addEventListener('click', minifyJson);
         document.getElementById('clear-btn').addEventListener('click', clearInput);
         document.getElementById('sample-btn').addEventListener('click', loadSample);
 
