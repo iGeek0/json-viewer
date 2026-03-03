@@ -449,16 +449,6 @@
             sizeStat.innerHTML = `📦 ${(bytes / 1024).toFixed(1)} KB`;
             linesStat.innerHTML = `📄 1 línea`;
             stats.style.display = 'flex';
-
-            // Update status and stats
-            status.innerHTML = '<div class="status valid"><span class="status-dot"></span>Válido</div>';
-            
-            const lines = formatted.split('\n').length;
-            const bytes = new Blob([formatted]).size;
-            
-            linesStat.innerHTML = `📄 ${lines} líneas`;
-            sizeStat.innerHTML = `📦 ${(bytes / 1024).toFixed(1)} KB`;
-            stats.style.display = 'flex';
         }
 
         function clearInput() {
