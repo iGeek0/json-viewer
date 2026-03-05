@@ -296,11 +296,15 @@
         <div class="output-section">
             <div class="output-header">
                 <label>Resultado</label>
-                <div class="stats" id="stats" style="display: none;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <button class="copy-btn" id="copy-btn" title="Copiar al portapapeles" style="display: none;">📋 Copiar</button>
+                    <div class="stats" id="stats" style="display: none;">
                     <span class="stat" id="lines-stat"></span>
                     <span class="stat" id="size-stat"></span>
                 </div>
-                <div id="status"></div>
+                    </div>
+                    <div id="status"></div>
+                </div>
             </div>
             <div class="output empty" id="output">
                 El JSON formateado aparecerá aquí
@@ -351,6 +355,7 @@
                 output.classList.add('empty');
                 status.innerHTML = '';
                 stats.style.display = 'none';
+                document.getElementById('copy-btn').style.display = 'none';
                 return;
             }
 
@@ -395,6 +400,7 @@
                     output.classList.remove('empty');
                     status.innerHTML = '<div class="status error"><span class="status-dot"></span>Inválido</div>';
                     stats.style.display = 'none';
+                    document.getElementById('copy-btn').style.display = 'none';
                     return;
                 }
             }
@@ -405,6 +411,7 @@
 
             // Update status and stats
             status.innerHTML = '<div class="status valid"><span class="status-dot"></span>Válido</div>';
+            document.getElementById('copy-btn').style.display = 'block';
             
             const lines = formatted.split('\n').length;
             const bytes = new Blob([formatted]).size;
@@ -422,6 +429,7 @@
                 output.classList.add('empty');
                 status.innerHTML = '';
                 stats.style.display = 'none';
+                document.getElementById('copy-btn').style.display = 'none';
                 return;
             }
 
@@ -436,6 +444,7 @@
                 output.classList.remove('empty');
                 status.innerHTML = '<div class="status error"><span class="status-dot"></span>Inválido</div>';
                 stats.style.display = 'none';
+                document.getElementById('copy-btn').style.display = 'none';
                 return;
             }
 
@@ -444,6 +453,7 @@
             output.classList.remove('empty');
 
             status.innerHTML = '<div class="status valid"><span class="status-dot"></span>Minificado</div>';
+            document.getElementById('copy-btn').style.display = 'block';
             
             const bytes = new Blob([minified]).size;
             sizeStat.innerHTML = `📦 ${(bytes / 1024).toFixed(1)} KB`;
@@ -457,6 +467,7 @@
             output.classList.add('empty');
             status.innerHTML = '';
             stats.style.display = 'none';
+            document.getElementById('copy-btn').style.display = 'none';
         }
 
         function loadSample() {
@@ -485,11 +496,25 @@
             formatJson();
         }
 
+        function copyOutput() {
+            const textToCopy = output.textContent;
+            if (!textToCopy || output.classList.contains('empty')) return;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.textContent = '✓ Copiado';
+                setTimeout(() => {
+                    btn.textContent = '📋 Copiar';
+                }, 2000);
+            });
+        }
+
         // Event listeners
         document.getElementById('format-btn').addEventListener('click', formatJson);
         document.getElementById('minify-btn').addEventListener('click', minifyJson);
         document.getElementById('clear-btn').addEventListener('click', clearInput);
         document.getElementById('sample-btn').addEventListener('click', loadSample);
+        document.getElementById('copy-btn').addEventListener('click', copyOutput);
 
         // Format on Ctrl+Enter
         input.addEventListener('keydown', (e) => {
