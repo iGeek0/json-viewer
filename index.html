@@ -265,9 +265,18 @@
             gap: 0.375rem;
         }
 
+        footer {
+            padding: 1rem 2rem 1.25rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: #ffffff;
+            font-size: 0.875rem;
+        }
+
         @media (max-width: 640px) {
             header { padding: 1rem; }
             main { padding: 1rem; }
+            footer { padding: 1rem; }
             .actions { flex-direction: column; }
         }
     </style>
@@ -311,6 +320,10 @@
             </div>
         </div>
     </main>
+
+    <footer>
+        Made with <span aria-hidden="true">❤️</span> by Dev4humans
+    </footer>
 
     <script>
         const input = document.getElementById('json-input');
